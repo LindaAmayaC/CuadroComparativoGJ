@@ -1,0 +1,48 @@
+header {
+  background-image: url(../imagenes/pro-table-top.png);
+  background-position: left top;
+  background-repeat: no-repeat;
+  padding-top: 250px;
+  display: block;
+  z-index: 2;
+  position: relative;
+}
+.logo {
+  top: 10px;
+  text-align: center;
+  z-index: 1;
+  position: absolute;
+  left: 45%;
+  margin-top: 5%;
+}
+.buscador {
+  margin: 50px;
+  width: auto;
+  height: 100px;
+  text-align: center;
+}
+.form-inline {
+  text-align: center;
+  left: 50%;
+  width: 50%;
+  margin: auto;
+}
+.btnExportar {
+  margin-top: 20px;
+  width: 250px;
+  margin-left: 30px;
+}
+.form-control {
+  width: 250px !important;
+}
+.form-control-plaintext {
+  width: 170px !important;
+}
+button a {
+  color: #fff;
+  text-decoration: none;
+}
+
+#numSolicitud {
+  margin-left: 20px;
+}

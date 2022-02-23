@@ -1,0 +1,135 @@
+h1 {
+  font-size: 2.4rem;
+  text-align: center;
+  font-weight: 800;
+}
+@media only screen and (min-width: 1170px) {
+  h1 {
+    font-size: 4rem;
+    font-weight: 300;
+    padding: 20px;
+  }
+  .logo {
+    margin-bottom: 10px;
+  }
+}
+
+header {
+  background-image: url(../imagenes/pro-table-top.png);
+  background-position: left top;
+  background-repeat: no-repeat;
+  padding-top: 250px;
+  display: block;
+  z-index: 2;
+  position: relative;
+}
+.logo {
+  top: 50px;
+  text-align: center;
+  z-index: 1;
+  position: absolute;
+  left: 45%;
+}
+
+/* main */
+main {
+  margin: 50px 20px;
+}
+.contenedorPrincipalTabla {
+  width: 100%;
+}
+/* Estilo tablas */
+.table thead th {
+  vertical-align: middle !important;
+}
+.textBold {
+  font-weight: bolder;
+  height: 15px;
+}
+.sizeSubtitle {
+  font-size: 16px;
+}
+thead #copropiedad,
+#infoGeneral {
+  border: 1px solid transparent !important;
+}
+
+.nombreProducto,
+.sizeTextProducto {
+  font-size: 15px;
+}
+.cantidadProducto {
+  font-size: 15px;
+  text-align: center;
+}
+
+.sizeTotal {
+  font-size: 14px;
+  text-align: center;
+  font-weight: bolder;
+}
+.infoAdicional {
+  text-align: center;
+  font-size: 14px;
+}
+#InfoProveedor {
+  text-align: center;
+}
+tbody th {
+  font-weight: normal;
+}
+.headTable {
+  background-color: #82d6f5 !important;
+  text-align: center;
+}
+
+.title {
+  background-color: #dee2e6 !important;
+  text-align: center;
+}
+
+.costos {
+  font-weight: bolder;
+  font-size: 14px;
+  text-align: center;
+}
+#btnRegresar {
+  position: relative;  
+
+}
+.btnExportar {
+  position: absolute;
+  right: 0;
+}
+.detalleCotizacion {
+  font-weight: bolder;
+  font-size: 12px;
+}
+.subtotal {
+  background-color: #deebf7 !important;
+}
+.total {
+  background-color: #bdd7ee !important;
+}
+.colorsubtitle,
+.center {
+  background-color: #edf2fb !important;
+}
+.center {
+  text-align: center;
+}
+
+#copropiedad {
+  font-size: 30px;
+  text-align: center;
+}
+#infoPropuesta {
+  background-color: #fff !important;
+}
+.btnPdf{
+  margin: 20px 0 ;
+}
+#btnExportarPdf{
+  height: 38px;
+  padding: 6px 12px;
+}
