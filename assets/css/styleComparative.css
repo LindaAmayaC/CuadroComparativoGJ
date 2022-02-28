@@ -113,7 +113,7 @@ tbody th {
 }
 .colorsubtitle,
 .center {
-  background-color: #edf2fb !important;
+  background-color: #bdd7ee  !important;
 }
 .center {
   text-align: center;
@@ -132,4 +132,7 @@ tbody th {
 #btnExportarPdf{
   height: 38px;
   padding: 6px 12px;
+}
+.original{
+  background-color: #edf2fb !important;
 }

@@ -20,6 +20,7 @@ function verificarExitenciaSolicitud(numSolicitud){
             if(data){
                 var idCopropiedad = data.UF_CRM_1640169249;
                 pintarInformacionCuadro(numSolicitud,idCopropiedad);
+                
                 $("#main").html(tabla);
             }
             else{
@@ -150,7 +151,7 @@ function recopilarInformacionAPintar(numSolicitud,infPropuesta,productosYCantida
     var listadoProductosCompleto = orderarListadoProductos(informacionPropuesta,productosSolicitud);
     let infoSolicitud = generarDataPrimeraColumna(numeroSolicitud,listadoProductosCompleto);
     let infoPropuesta = generarArrayPropuestaAPintar(infoProveedores,informacionPropuesta);
-    pintarTabla(infoSolicitud,infoPropuesta,nombreCopropiedad);
+    pintarTabla(infoSolicitud,infoPropuesta,nombreCopropiedad,productosSolicitud);
     
 }
 function orderarListadoProductos(infoPropuesta,productosSolicitud){
@@ -182,7 +183,6 @@ function generarArrayPropuestaAPintar(infoProveedores,informacionPropuesta){
     
     
     for (let i = 0; i < contadorPropuestas; i++) {
-       
         let productos =[];
 
         for (let j = 0; j <informacionPropuesta.listadoPropuestaProveedores[i].nombreProducto.length; j++) {
@@ -194,9 +194,7 @@ function generarArrayPropuestaAPintar(infoProveedores,informacionPropuesta){
             }
             
             productos.push(producto);
-           
         };
-       
         let infoCompletaProveedor=infoProveedores[informacionPropuesta.listadoPropuestaProveedores[i].nitProveedor];
 
         var propuestaProveedor={
@@ -217,13 +215,10 @@ function generarArrayPropuestaAPintar(infoProveedores,informacionPropuesta){
 
         }; 
         propuestasProveedores.push(propuestaProveedor);
-       
     } 
     return propuestasProveedores;
 }
-function pintarTabla(infoSolicitud,infoPropuesta,nombreCopropiedad){
-
-   
+function pintarTabla(infoSolicitud,infoPropuesta,nombreCopropiedad,productosIniciales){
     let pintarInfoSolicitud = '<th colspan="8"  class="title" style="width:100%"> Número de Solicitud:  '+ infoSolicitud.numeroSolicitud+' -    Fecha:  '+ infoSolicitud.fechaActual+'</th>';
     let pintarNombreCopropiedad ='<th colspan="8"  class="title" style="width:100%">'+nombreCopropiedad+'</th>';
     let pintarTitleTotal='<td class="textBold sizeSubtitle center">VALOR UNITARIO </td>';
@@ -232,19 +227,28 @@ function pintarTabla(infoSolicitud,infoPropuesta,nombreCopropiedad){
     $("#copropiedad").append(pintarNombreCopropiedad);
     $("#infoGeneral").append(pintarInfoSolicitud);
     $("#celdaVacia").append(pintarCeldaVacia);
-   
-
 
     for (let i = 0; i < infoSolicitud.listadoProductos.length; i++) {
-        let productosSolicitud= pintarProducto(infoSolicitud.listadoProductos[i].nombreProducto, infoSolicitud.listadoProductos[i].cantidadProducto);
+        let productosSolicitud;
+        let productosPropuestas;
 
-        let productosPropuestas= infoPropuesta
-                                    .map(proveedor=>buscarProductoActualEnProovedor(proveedor, infoSolicitud.listadoProductos[i]))
+        let productoInicial= esProductoinicial(infoSolicitud.listadoProductos[i].nombreProducto, infoSolicitud.listadoProductos[i].cantidadProducto,productosIniciales);
+        if(productoInicial == true){
+            productosSolicitud= pintarProductoInicial(infoSolicitud.listadoProductos[i].nombreProducto, infoSolicitud.listadoProductos[i].cantidadProducto);
+            productosPropuestas= infoPropuesta
+                                    .map(proveedor=>buscarProductoActualEnProveedor(proveedor, infoSolicitud.listadoProductos[i]))
+                                    .map(producto=> pintarProductoValoresIniciales(producto.valorUnitarioProducto, producto.totalProducto))
+                                    .reduce(((acc, productoString)=> acc+productoString), "");
+        }
+        else{
+        productosSolicitud= pintarProducto(infoSolicitud.listadoProductos[i].nombreProducto, infoSolicitud.listadoProductos[i].cantidadProducto);
+        productosPropuestas= infoPropuesta
+                                    .map(proveedor=>buscarProductoActualEnProveedor(proveedor, infoSolicitud.listadoProductos[i]))
                                     .map(producto=> pintarProductoValores(producto.valorUnitarioProducto, producto.totalProducto))
                                     .reduce(((acc, productoString)=> acc+productoString), "");
+        }
 
         $("#tablaProductos").after("<tr>"+productosSolicitud+productosPropuestas+"</tr>");
-       
         
     }
 
@@ -270,14 +274,12 @@ function pintarTabla(infoSolicitud,infoPropuesta,nombreCopropiedad){
         $("#subtotal").after(subtotalesProveedoresAPintar);
         $("#ivaField").after(subtotalesIVA);
         $("#granTotal").after(granTotales); 
-      
     
 
     
     let contador=infoPropuesta.length;
     for (let i = 0; i <contador; i++) {
         
-       
         let pintarInfoProveedor='<th scope="col"  class="headTable" id="InfoProveedor" style="width:25%" colspan="2">'+ validarCampo(infoPropuesta[i].nombreProveedor)+' <br>'+ validarCampo(infoPropuesta[i].telefonoProveedor)+'<br>'+  validarCampo(infoPropuesta[i].nitProveedor)+'</th>';
         let pintarFechaCoti ='<td colspan="2" class="infoAdicional">'+ validarCampo(normalizarFecha(infoPropuesta[i].fechaCotizacion))+'</td>';
         let pintarVigenciaCoti ='<td colspan="2" class="infoAdicional">'+ validarCampo(infoPropuesta[i].vigenciaCotizacion)+'</td>';
@@ -304,6 +306,14 @@ function pintarTabla(infoSolicitud,infoPropuesta,nombreCopropiedad){
     } 
 
 }
+function esProductoinicial(nombre,cantidad,productos){
+    for (let i = 0; i < productos.length; i++) {
+        if(nombre  == productos[i].nombreProducto && cantidad == productos[i].cantidadProducto){
+            return true;
+        }
+        return false;
+    }
+}
 function normalizarFecha(fecha){
    
     var fechaNormalizada = new Date(fecha).toLocaleDateString();
@@ -319,35 +329,41 @@ function validarCampo(dato){
 function pintarProducto(primerParametro, segundoParametro){
     return '<td colspan="1" class="cantidadProducto" id="cantidadProducto">'+primerParametro+'</td>'+'<td class="cantidadProducto" id="cantidadProducto">'+segundoParametro+'</td>';
 }
+function pintarProductoInicial(primerParametro, segundoParametro){
+    return '<td colspan="1" class="cantidadProducto original" id="cantidadProducto">'+primerParametro+'</td>'+'<td class="cantidadProducto original" id="cantidadProducto">'+segundoParametro+'</td>';
+}
 function pintarProductoValores(primerParametro, segundoParametro){
     if(primerParametro == "" && segundoParametro ==""){
-      return '<td colspan="1" class="cantidadProducto" id="cantidadProducto">'+primerParametro+'</td>'+'<td class="cantidadProducto" id="cantidadProducto">'+segundoParametro+'</td>';
+        return '<td colspan="1" class="cantidadProducto" id="cantidadProducto">'+primerParametro+'</td>'+'<td class="cantidadProducto" id="cantidadProducto">'+segundoParametro+'</td>';
     }
     return '<td colspan="1" class="cantidadProducto" id="cantidadProducto">$ '+primerParametro+'</td>'+'<td class="cantidadProducto" id="cantidadProducto">$ '+segundoParametro+'</td>';
 }
+function pintarProductoValoresIniciales(primerParametro, segundoParametro){
+    if(primerParametro == "" && segundoParametro ==""){
+        return '<td colspan="1" class="cantidadProducto original" id="cantidadProducto">'+primerParametro+'</td>'+'<td class="cantidadProducto original" id="cantidadProducto">'+segundoParametro+'</td>';
+    }
+    return '<td colspan="1" class="cantidadProducto original" id="cantidadProducto">$ '+primerParametro+'</td>'+'<td class="cantidadProducto original" id="cantidadProducto">$ '+segundoParametro+'</td>';
+}
 
-
-  function pintarIVA(primerParametro, segundoParametro){
+function pintarIVA(primerParametro, segundoParametro){
     return '<td colspan="1" class="cantidadProducto costos" id="cantidadProducto">'+primerParametro+'</td>'+'<td class="cantidadProducto costos" id="cantidadProducto">'+segundoParametro+'</td>';
 }
 
-
-  function pintarSubtotal(primerParametro, segundoParametro){
+function pintarSubtotal(segundoParametro){
     return '<td colspan="1" class="sizeTotal subtotal"></td>'+'<td class="sizeTotal subtotal">'+segundoParametro+'</td>';
 }
 function pintarTotal(primerParametro){
     return'<td colspan="2" class="sizeTotal total">'+ primerParametro +'</td>';
 }
 
+function buscarProductoActualEnProveedor(proveedor, productoABuscar){
 
-function buscarProductoActualEnProovedor(proveedor, productoABuscar){
-      let objetoABuscar= proveedor.productosProveedores
-        .filter(producto=> producto.nombreProducto==productoABuscar.nombreProducto && producto.cantidadProducto==productoABuscar.cantidadProducto);
-      return objetoABuscar[0]? objetoABuscar[0]: {valorUnitarioProducto: "", totalProducto:""};
+    let objetoABuscar=proveedor.productosProveedores
+    .filter(producto=> producto.nombreProducto==productoABuscar.nombreProducto && producto.cantidadProducto==productoABuscar.cantidadProducto);
+    return objetoABuscar[0]? objetoABuscar[0]: {valorUnitarioProducto: "", totalProducto:""};
 }
 
-
- function fnExcelReport()
+function fnExcelReport()
 {
     console.log("imp excel");
     var table = $("#tablaComparacion");
