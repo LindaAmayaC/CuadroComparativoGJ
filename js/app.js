@@ -168,53 +168,55 @@ function orderarListadoProductos(infoPropuesta,productosSolicitud){
 }
 function generarDataPrimeraColumna(numeroSolicitud,listadoProductos){
     let fechaActual = new Date();
-  
     var informacionSolicitud={
         fechaActual : fechaActual.toLocaleDateString(),
         numeroSolicitud : numeroSolicitud,
         listadoProductos : listadoProductos
     }
-  return informacionSolicitud;
+    return informacionSolicitud;
 }
 
 function generarArrayPropuestaAPintar(infoProveedores,informacionPropuesta){
     let propuestasProveedores=[];
     let contadorPropuestas=informacionPropuesta.listadoPropuestaProveedores.length;
     
-    
     for (let i = 0; i < contadorPropuestas; i++) {
-        let productos =[];
 
-        for (let j = 0; j <informacionPropuesta.listadoPropuestaProveedores[i].nombreProducto.length; j++) {
-            var producto={
-                nombreProducto : informacionPropuesta.listadoPropuestaProveedores[i].nombreProducto[j],
-                cantidadProducto : Number.parseInt(informacionPropuesta.listadoPropuestaProveedores[i].cantidadProducto[j]),
-                valorUnitarioProducto:  Number.parseInt(informacionPropuesta.listadoPropuestaProveedores[i].valorUnitarioProducto[j]),
-                totalProducto :  Number.parseInt(informacionPropuesta.listadoPropuestaProveedores[i].totalProducto[j])
-            }
-            
-            productos.push(producto);
-        };
         let infoCompletaProveedor=infoProveedores[informacionPropuesta.listadoPropuestaProveedores[i].nitProveedor];
+        if(infoCompletaProveedor !== undefined){
+            let productos =[];
 
-        var propuestaProveedor={
-            nombreProveedor : infoCompletaProveedor.TITLE,
-            telefonoProveedor :infoCompletaProveedor.PHONE[0].VALUE,
-            nitProveedor :infoCompletaProveedor.UF_CRM_1613489520,
-            productosProveedores : productos,
-            ivaProducto: informacionPropuesta.listadoPropuestaProveedores[i].ivaProducto,
-            fechaCotizacion : informacionPropuesta.listadoPropuestaProveedores[i].fechaPropuesta,
-            vigenciaCotizacion :informacionPropuesta.listadoPropuestaProveedores[i].vigenciaCotizacion,
-            tiempoEntrega : informacionPropuesta.listadoPropuestaProveedores[i].tiempoEntrega,
-            condicionPago :informacionPropuesta.listadoPropuestaProveedores[i].condicionPago,
-            condicionGarantia: informacionPropuesta.listadoPropuestaProveedores[i].condicionGarantia,
-            tiempoGarantia :informacionPropuesta.listadoPropuestaProveedores[i].tiempoGarantia,
-            beneficio:informacionPropuesta.listadoPropuestaProveedores[i].beneficio,
-            observacion :informacionPropuesta.listadoPropuestaProveedores[i].observacion,
-            calificacionProveedor: infoCompletaProveedor.UF_CRM_1640858973795
+            for (let j = 0; j <informacionPropuesta.listadoPropuestaProveedores[i].nombreProducto.length; j++) {
+                var producto={
+                    nombreProducto : informacionPropuesta.listadoPropuestaProveedores[i].nombreProducto[j],
+                    cantidadProducto : Number.parseInt(informacionPropuesta.listadoPropuestaProveedores[i].cantidadProducto[j]),
+                    valorUnitarioProducto:  Number.parseInt(informacionPropuesta.listadoPropuestaProveedores[i].valorUnitarioProducto[j]),
+                    totalProducto :  Number.parseInt(informacionPropuesta.listadoPropuestaProveedores[i].totalProducto[j])
+                }
+                
+                productos.push(producto);
+            };
 
-        }; 
-        propuestasProveedores.push(propuestaProveedor);
+            var propuestaProveedor={
+                nombreProveedor : infoCompletaProveedor.TITLE,
+                telefonoProveedor :infoCompletaProveedor.PHONE[0].VALUE,
+                nitProveedor :infoCompletaProveedor.UF_CRM_1613489520,
+                productosProveedores : productos,
+                ivaProducto: informacionPropuesta.listadoPropuestaProveedores[i].ivaProducto,
+                fechaCotizacion : informacionPropuesta.listadoPropuestaProveedores[i].fechaPropuesta,
+                vigenciaCotizacion :informacionPropuesta.listadoPropuestaProveedores[i].vigenciaCotizacion,
+                tiempoEntrega : informacionPropuesta.listadoPropuestaProveedores[i].tiempoEntrega,
+                condicionPago :informacionPropuesta.listadoPropuestaProveedores[i].condicionPago,
+                condicionGarantia: informacionPropuesta.listadoPropuestaProveedores[i].condicionGarantia,
+                tiempoGarantia :informacionPropuesta.listadoPropuestaProveedores[i].tiempoGarantia,
+                beneficio:informacionPropuesta.listadoPropuestaProveedores[i].beneficio,
+                observacion :informacionPropuesta.listadoPropuestaProveedores[i].observacion,
+                calificacionProveedor: infoCompletaProveedor.UF_CRM_1640858973795
+
+            }; 
+            propuestasProveedores.push(propuestaProveedor);
+        }
+        
     } 
     return propuestasProveedores;
 }
@@ -227,13 +229,12 @@ function pintarTabla(infoSolicitud,infoPropuesta,nombreCopropiedad,productosInic
     $("#copropiedad").append(pintarNombreCopropiedad);
     $("#infoGeneral").append(pintarInfoSolicitud);
     $("#celdaVacia").append(pintarCeldaVacia);
-
     for (let i = 0; i < infoSolicitud.listadoProductos.length; i++) {
         let productosSolicitud;
         let productosPropuestas;
 
         let productoInicial= esProductoinicial(infoSolicitud.listadoProductos[i].nombreProducto, infoSolicitud.listadoProductos[i].cantidadProducto,productosIniciales);
-        if(productoInicial == true){
+        if(productoInicial){
             productosSolicitud= pintarProductoInicial(infoSolicitud.listadoProductos[i].nombreProducto, infoSolicitud.listadoProductos[i].cantidadProducto);
             productosPropuestas= infoPropuesta
                                     .map(proveedor=>buscarProductoActualEnProveedor(proveedor, infoSolicitud.listadoProductos[i]))
@@ -311,8 +312,8 @@ function esProductoinicial(nombre,cantidad,productos){
         if(nombre  == productos[i].nombreProducto && cantidad == productos[i].cantidadProducto){
             return true;
         }
-        return false;
     }
+    return false;
 }
 function normalizarFecha(fecha){
    
