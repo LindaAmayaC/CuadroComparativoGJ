@@ -79,7 +79,7 @@ tbody th {
   font-weight: normal;
 }
 .headTable {
-  background-color: #82d6f5 !important;
+  background-color: #84d2ff !important;
   text-align: center;
 }
 
@@ -113,7 +113,7 @@ tbody th {
 }
 .colorsubtitle,
 .center {
-  background-color: #edf2fb !important;
+  background-color: #bdd7ee  !important;
 }
 .center {
   text-align: center;
@@ -133,8 +133,13 @@ tbody th {
   height: 38px;
   padding: 6px 12px;
 }
+<<<<<<< HEAD
 .nota{
   margin: 15px 0 15px 15px;
   font-size: 15px;
   color:red;
+=======
+.original{
+  background-color: #edf2fb !important;
+>>>>>>> origin/development
 }
